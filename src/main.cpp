@@ -89,7 +89,7 @@ int main(){
         cfg.readFile(configFile.c_str());
     }catch(const FileIOException &fioex){
         /* flush any i/o error into stderr */
-        cout << "I/O error while config reading file.";
+        cout << "I/O error while config reading file." << endl;
         return(EXIT_FAILURE);
     }catch(const ParseException &pex){
         /* flush any parser error into stderr */
@@ -112,6 +112,9 @@ int main(){
 
     /* create instance of the http server */
     HttpServer* server = new HttpServer(servicePort,(void*)handleRequest);
+
+    /* set the server banner */
+    server->setServerBanner(serverBanner);
 
     /* start the http server */
     server->start();

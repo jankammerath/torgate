@@ -47,10 +47,16 @@ class HttpServer {
                     const char * upload_data,
                     size_t * upload_data_size,
                     void ** ptr);
-
+        
+        void setServerBanner(string value){
+            HttpServer::serverBanner = value;
+        }
     private:
         /* private members */
         int port;
         void* handler;
         struct MHD_Daemon* daemonHandle;
+
+        /* static public member */
+        static string serverBanner;
 };

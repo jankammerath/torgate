@@ -10,9 +10,12 @@ struct postStatus {
     char *buff;
 };
 
+string HttpServer::serverBanner;
+
 HttpServer::HttpServer(int serverPort, void* requestHandler){
     this->port = serverPort;
     this->handler = requestHandler;
+    HttpServer::serverBanner = "Torgate/42";
 }
 
 /* starts the http server */
@@ -92,6 +95,9 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
         MHD_add_response_header (response, httpResult.headerList[h].name.c_str(), 
                             httpResult.headerList[h].value.c_str());
     }
+
+    /* add the server banner to the result */
+    MHD_add_response_header (response, "Server", HttpServer::serverBanner.c_str());
 
     result = MHD_queue_response(connection, httpResult.status, response);
     MHD_destroy_response(response);
