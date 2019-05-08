@@ -21,7 +21,10 @@ HttpServer::HttpServer(int serverPort, void* requestHandler){
 
 /* starts the http server */
 void HttpServer::start(){
-    this->daemonHandle = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG,
+    this->daemonHandle = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY 
+                                        | MHD_USE_DEBUG 
+                                        | MHD_USE_THREAD_PER_CONNECTION
+                                        | MHD_USE_TCP_FASTOPEN,
 		       this->port, NULL, NULL, &HttpServer::handleRequest, this->handler, MHD_OPTION_END);
 }
 
@@ -46,6 +49,8 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
     string urlString(url); 
     string methodString(method);
     string uploadData;
+
+    /* TODO: The request headers need to be whitelabeled and forwarded! */
 
     /* get all get-parameters to attach to URL */
     vector<HttpResultHeader> getParamList;
