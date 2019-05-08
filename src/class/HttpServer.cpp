@@ -33,7 +33,13 @@ int HttpServer::attachGetParameters (void *cls, enum MHD_ValueKind kind, const c
     vector<HttpResultHeader>* getParamList = (vector<HttpResultHeader>*)cls;
     HttpResultHeader param;
     param.name = key;
-    param.value = value;
+
+    if(value == NULL){
+        param.value = "";
+    }else{
+        param.value = value;
+    }
+
     getParamList->push_back(param);
     return MHD_YES;
 }
