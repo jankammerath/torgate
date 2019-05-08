@@ -1,7 +1,19 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 #pragma once
+
+struct TorHttpResponseHeader {
+    string name;
+    string value;
+};
+
+struct TorHttpResponse {
+    vector<TorHttpResponseHeader> headerList;
+    string content;
+    int status;
+};
 
 class TorHttpRequest {
     public:
@@ -23,7 +35,7 @@ class TorHttpRequest {
         }
 
         /* executes HTTP get */
-        string get();
+        TorHttpResponse get();
 
         /* gets the rewritten target host name */
         static string getTargetHostName(string sourceHost, string tld);

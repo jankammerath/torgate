@@ -44,14 +44,11 @@ HttpResult handleRequest(string host, string method, string url, string data){
     request->setUserAgent(userAgent);
 
     /* perform the get request */
-    string content = request->get();
+    TorHttpResponse response = request->get();
 
     result.status = 400;
     result.contentType = "text/html";
-    result.content = "This is <b>Torgate v0.1</b> at your service!<br />"
-                    "<b>Method</b>: " + method + "<br />"
-                    "<b>Host</b>: " + host + "<br />"
-                    "<b>URL</b>: " + url + "<br />";
+    result.content = response.content;
 
     return result;
 }

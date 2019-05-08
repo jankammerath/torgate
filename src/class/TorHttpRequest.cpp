@@ -18,7 +18,10 @@ string TorHttpRequest::getTargetHostName(string sourceHost, string tld){
 }
 
 /* executes a GET requests against the defined Host and URL */
-string TorHttpRequest::get(){
+TorHttpResponse TorHttpRequest::get(){
+    TorHttpResponse result;
+
+    /* initialise curl handle */
     CURL *curl;
 
     /* define the full request url */
@@ -34,6 +37,7 @@ string TorHttpRequest::get(){
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, TorHttpRequest::writeResponse);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, true); 
 
     /* check if a proxy is defined */
     if(this->proxyHost.length() > 0 && this->proxyPort > 0){
@@ -42,10 +46,12 @@ string TorHttpRequest::get(){
         curl_easy_setopt(curl, CURLOPT_PROXY, proxyUrl.c_str());
     }
 
-    curl_easy_perform(curl);
+    /* kill and clean up curl */
+    result.status = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
 
-    cout << "HTTP result: " << readBuffer << endl;
+    /* build up the result struct */
+    result.content = readBuffer;
 
-    return readBuffer;
+    return result;
 }
