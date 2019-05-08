@@ -83,7 +83,15 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
     /* it is absolutely vital to use MHD_RESPMEM_MUST_COPY as otherwise memory exceptions will occur.
         See further information here: https://www.gnu.org/software/libmicrohttpd/manual/html_node/microhttpd_002dresponse-create.html */
     response = MHD_create_response_from_buffer (httpResult.content.size(),(void*)httpResult.content.c_str(),MHD_RESPMEM_MUST_COPY);
-    MHD_add_response_header (response, "Content-Type", httpResult.contentType.c_str());
+
+    /* add all headers to the result */
+    for(int h=0; h<httpResult.headerList.size(); h++){
+        MHD_add_response_header (response, httpResult.headerList[h].name.c_str(), 
+                            httpResult.headerList[h].value.c_str());
+        
+        cout << "HEADER *** " <<  httpResult.headerList[h].name << ": " << httpResult.headerList[h].value << endl;
+    }
+
     result = MHD_queue_response(connection, httpResult.status, response);
     MHD_destroy_response(response);
 

@@ -1,13 +1,19 @@
 #include <iostream>
+#include <vector>
 #include <microhttpd.h>
 using namespace std;
 
 #pragma once
 
+struct HttpResultHeader {
+    string name;
+    string value;
+};
+
 struct HttpResult {
     int status;
+    vector<HttpResultHeader> headerList;
     string content;
-    string contentType;
 };
 
 class HttpServer {

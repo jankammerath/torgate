@@ -47,6 +47,8 @@ class TorHttpRequest {
             return size * nmemb;
         }
 
+        static size_t writeResponseHeader(char* b, size_t size, size_t nitems, void* userdata);
+
         /* private variables */
         string requestHost;
         string requestUrl;

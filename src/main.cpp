@@ -46,8 +46,16 @@ HttpResult handleRequest(string host, string method, string url, string data){
     /* perform the get request */
     TorHttpResponse response = request->get();
 
-    result.status = 400;
-    result.contentType = "text/html";
+    /* transfer all headers */
+    for(int i=0; i<response.headerList.size(); i++){
+        HttpResultHeader header;
+        header.name = response.headerList[i].name;
+        header.value = response.headerList[i].value;
+        result.headerList.push_back(header);
+    }
+
+    /* set status code and content */
+    result.status = response.status;
     result.content = response.content;
 
     return result;
