@@ -34,6 +34,9 @@ int HttpServer::attachGetParameters (void *cls, enum MHD_ValueKind kind, const c
     HttpResultHeader param;
     param.name = key;
 
+    /* query string params that do not have
+        a value assigned (e.g. ?nothing ) will
+        have value being a null pointer */
     if(value == NULL){
         param.value = "";
     }else{
