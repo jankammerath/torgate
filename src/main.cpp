@@ -9,6 +9,7 @@ using namespace libconfig;
 #include "class/HttpServer.hpp"
 #include "class/TorHttpRequest.hpp"
 #include "class/RewriteEngine.hpp"
+#include "class/LocalRequest.hpp"
 
 /* global variables */
 string tld;
@@ -17,6 +18,7 @@ int proxyPort;
 string userAgent;
 bool clientVerbose;
 string serverBanner;
+string localPath;
 
 /* determines which config file to use and returns its path */
 string getConfigFile(){
@@ -32,12 +34,9 @@ string getConfigFile(){
     return result;
 }
 
-/* handles http requests */
-HttpResult handleRequest(string host, string method, string url, string data){
+HttpResult executeTorRequest(string targetHost,string url){
     HttpResult result;
 
-    /* create tor http request */
-    string targetHost = TorHttpRequest::getTargetHostName(host,tld);
     TorHttpRequest* request = new TorHttpRequest(targetHost,url);
 
     /* set client verbose if requested */
@@ -69,6 +68,25 @@ HttpResult handleRequest(string host, string method, string url, string data){
     /* initialise rewrite engine and rewrite response */
     RewriteEngine* rewrite = new RewriteEngine(tld);
     rewrite->rewriteHttpResult(&result);
+
+    return result;
+}
+
+/* handles http requests */
+HttpResult handleRequest(string host, string method, string url, string data){
+    HttpResult result;
+
+    /* create tor http request */
+    string targetHost = TorHttpRequest::getTargetHostName(host,tld);
+
+    if(targetHost.empty() == true or targetHost == "www."){
+        /* target host is empty: local request */
+        LocalRequest* request = new LocalRequest(localPath,url);
+        result = request->execute();
+    }else{
+        /* target host is valid: remote request */
+        result = executeTorRequest(targetHost,url);
+    }
 
     return result;
 }
@@ -109,6 +127,7 @@ int main(){
     root.lookupValue("userAgent",userAgent);
     root.lookupValue("verboseClient",clientVerbose);
     root.lookupValue("serverBanner",serverBanner);
+    root.lookupValue("localPath",localPath);
 
     /* create instance of the http server */
     HttpServer* server = new HttpServer(servicePort,(void*)handleRequest);

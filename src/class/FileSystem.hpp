@@ -60,6 +60,9 @@ class FileSystem {
             ifstream fileInput(fileName);
             string result((istreambuf_iterator<char>(fileInput)),
                                 istreambuf_iterator<char>());
+
+            cout << "file contents: " << endl << result << endl;
+
             return result;
         }
 };

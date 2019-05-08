@@ -81,8 +81,6 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
             + Util::urlencode(getParamList[p].value));
     }
 
-    cout << "complete URL: " << urlString << endl;
-
     /* get the requested hostname as string */
     string hostName = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, "Host");
 
