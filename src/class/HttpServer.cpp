@@ -25,7 +25,7 @@ void HttpServer::start(){
 int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
 		    const char * url, const char * method, const char * version,
             const char * upload_data, size_t * upload_data_size, void ** ptr){
-    int result = 0;
+    int result;
     struct MHD_Response* response;
 
     /* convert method, url to string */
@@ -80,16 +80,17 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
     HttpResult (*handlerFunc)(string,string,string,string) = (HttpResult(*)(string,string,string,string))cls;
     HttpResult httpResult = handlerFunc(hostName,methodString,urlString,uploadData);
 
+    /* set the content to be returned */
+    string content = httpResult.content;
+
     /* it is absolutely vital to use MHD_RESPMEM_MUST_COPY as otherwise memory exceptions will occur.
         See further information here: https://www.gnu.org/software/libmicrohttpd/manual/html_node/microhttpd_002dresponse-create.html */
-    response = MHD_create_response_from_buffer (httpResult.content.size(),(void*)httpResult.content.c_str(),MHD_RESPMEM_MUST_COPY);
+    response = MHD_create_response_from_buffer (content.size(),(void*)content.c_str(),MHD_RESPMEM_MUST_COPY);
 
     /* add all headers to the result */
     for(int h=0; h<httpResult.headerList.size(); h++){
         MHD_add_response_header (response, httpResult.headerList[h].name.c_str(), 
                             httpResult.headerList[h].value.c_str());
-        
-        cout << "HEADER *** " <<  httpResult.headerList[h].name << ": " << httpResult.headerList[h].value << endl;
     }
 
     result = MHD_queue_response(connection, httpResult.status, response);
@@ -97,6 +98,8 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
 
     /* clear context pointer */
     *ptr = NULL; 
+
+    cout << "HTTP PROCESS FINISHED: " << result << endl;
 
     return result;
 }
