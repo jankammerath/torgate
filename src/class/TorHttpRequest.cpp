@@ -89,7 +89,12 @@ TorHttpResponse TorHttpRequest::get(){
     }
 
     /* kill and clean up curl */
-    result.status = curl_easy_perform(curl);
+    CURLcode res = curl_easy_perform(curl);
+    if(res == CURLE_OK) {
+        /* get the HTTP response code */
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &result.status);
+    }
+
     curl_easy_cleanup(curl);
 
     /* build up the result struct */

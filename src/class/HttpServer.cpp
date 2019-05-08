@@ -97,9 +97,7 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
     MHD_destroy_response(response);
 
     /* clear context pointer */
-    *ptr = NULL; 
-
-    cout << "HTTP PROCESS FINISHED: " << result << endl;
+    *ptr = NULL;
 
     return result;
 }

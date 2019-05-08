@@ -55,7 +55,7 @@ HttpResult handleRequest(string host, string method, string url, string data){
     }
 
     /* set status code and content */
-    result.status = 200;
+    result.status = response.status;
     result.content = response.content;
 
     return result;
