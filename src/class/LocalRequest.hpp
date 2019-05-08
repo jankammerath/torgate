@@ -17,6 +17,7 @@ class LocalRequest{
 
     private:
         HttpResult getDefaultResult();
+        string getErrorContent(int statusCode);
 
         string path;
         string fileName;

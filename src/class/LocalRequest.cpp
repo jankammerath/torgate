@@ -10,7 +10,7 @@ HttpResult LocalRequest::execute(){
     /* check if the filename is empty */
     if(this->fileName == "/" or this->fileName.empty() == true){
         /* set default file to index.html */
-        this->fileName = "index.html";
+        this->fileName = "/index.html";
     }
 
     /* check if the file exists */
@@ -18,7 +18,25 @@ HttpResult LocalRequest::execute(){
     if(FileSystem::fileExists(file)){
         result.status = 200;
         result.content = FileSystem::readFile(file);
+    }else{
+        result.status = 404;
+        result.content = this->getErrorContent(404);
     }
+
+    return result;
+}
+
+/* check ifs an error page exists in the path */
+string LocalRequest::getErrorContent(int statusCode){
+    string result = "Error " + std::to_string(statusCode);
+
+    /* create the error file path */
+    string errorFile = this->path + "/error/" + std::to_string(statusCode) + ".html";
+    if(FileSystem::fileExists(errorFile)){
+        result = FileSystem::readFile(errorFile);
+    }
+
+    return result;
 }
 
 HttpResult LocalRequest::getDefaultResult(){
