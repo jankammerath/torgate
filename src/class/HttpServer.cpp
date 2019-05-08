@@ -4,6 +4,7 @@
 #include <sstream>
 using namespace std;
 #include "HttpServer.hpp"
+#include "Util.hpp"
 
 struct postStatus {
     bool status;
@@ -31,6 +32,7 @@ int HttpServer::attachGetParameters (void *cls, enum MHD_ValueKind kind, const c
     param.name = key;
     param.value = value;
     getParamList->push_back(param);
+    return MHD_YES;
 }
 
 /* handles all http requests to this server */
@@ -47,7 +49,9 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
 
     /* get all get-parameters to attach to URL */
     vector<HttpResultHeader> getParamList;
-    MHD_get_connection_values (connection, MHD_GET_ARGUMENT_KIND, &HttpServer::attachGetParameters, &getParamList);
+    MHD_get_connection_values (connection, MHD_GET_ARGUMENT_KIND, 
+                HttpServer::attachGetParameters, &getParamList);
+
     /* add all parameters */
     for(int p=0; p<getParamList.size(); p++){
         if(p == 0){
@@ -55,13 +59,15 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
             urlString.append("?");
         }else{
             /* append query string ampersand mark */
-            urlString.append("&");
+            urlString.append({'&'});
         }
 
         /* append the actual param and value */
-        urlString.append(getParamList[p].name 
-                + "=" + getParamList[p].value);
+        urlString.append(getParamList[p].name + "=" 
+            + Util::urlencode(getParamList[p].value));
     }
+
+    cout << "complete URL: " << urlString << endl;
 
     /* get the requested hostname as string */
     string hostName = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, "Host");

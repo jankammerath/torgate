@@ -23,7 +23,7 @@ size_t TorHttpRequest::writeResponseHeader(char* b, size_t size, size_t nitems, 
 
     /* vector with all valid headers to return */
     vector<string> vlist = {
-        "Content-Type", "Content-Language"
+        "Content-Type", "Content-Language", "Cache-Control", "Expires"
     };
     
     if(headerString.size() > 0){
@@ -64,7 +64,7 @@ TorHttpResponse TorHttpRequest::get(){
     CURL *curl;
 
     /* define the full request url */
-    string url = "http://" + this->requestHost + "/" + this->requestUrl;
+    string url = "http://" + this->requestHost + this->requestUrl;
 
     /* buffer to write result into */
     string readBuffer;
