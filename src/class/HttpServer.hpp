@@ -47,6 +47,8 @@ class HttpServer {
                     const char * upload_data,
                     size_t * upload_data_size,
                     void ** ptr);
+        static int attachGetParameters (void *cls, enum MHD_ValueKind kind, 
+                                        const char *key, const char* value);
         
         void setServerBanner(string value){
             HttpServer::serverBanner = value;

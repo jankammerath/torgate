@@ -24,6 +24,15 @@ void HttpServer::start(){
 		       this->port, NULL, NULL, &HttpServer::handleRequest, this->handler, MHD_OPTION_END);
 }
 
+/* attaches get parameters to the url provided in value pointer */
+int HttpServer::attachGetParameters (void *cls, enum MHD_ValueKind kind, const char *key, const char* value){
+    vector<HttpResultHeader>* getParamList = (vector<HttpResultHeader>*)cls;
+    HttpResultHeader param;
+    param.name = key;
+    param.value = value;
+    getParamList->push_back(param);
+}
+
 /* handles all http requests to this server */
 int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
 		    const char * url, const char * method, const char * version,
@@ -35,6 +44,24 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
     string urlString(url); 
     string methodString(method);
     string uploadData;
+
+    /* get all get-parameters to attach to URL */
+    vector<HttpResultHeader> getParamList;
+    MHD_get_connection_values (connection, MHD_GET_ARGUMENT_KIND, &HttpServer::attachGetParameters, &getParamList);
+    /* add all parameters */
+    for(int p=0; p<getParamList.size(); p++){
+        if(p == 0){
+            /* append query string question mark */
+            urlString.append("?");
+        }else{
+            /* append query string ampersand mark */
+            urlString.append("&");
+        }
+
+        /* append the actual param and value */
+        urlString.append(getParamList[p].name 
+                + "=" + getParamList[p].value);
+    }
 
     /* get the requested hostname as string */
     string hostName = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, "Host");
