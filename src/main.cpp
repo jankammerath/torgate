@@ -8,12 +8,15 @@ using namespace libconfig;
 #include "class/FileSystem.hpp"
 #include "class/HttpServer.hpp"
 #include "class/TorHttpRequest.hpp"
+#include "class/RewriteEngine.hpp"
 
 /* global variables */
 string tld;
 string proxyHost;
 int proxyPort;
 string userAgent;
+bool clientVerbose;
+string serverBanner;
 
 /* determines which config file to use and returns its path */
 string getConfigFile(){
@@ -37,6 +40,11 @@ HttpResult handleRequest(string host, string method, string url, string data){
     string targetHost = TorHttpRequest::getTargetHostName(host,tld);
     TorHttpRequest* request = new TorHttpRequest(targetHost,url);
 
+    /* set client verbose if requested */
+    if(clientVerbose){
+        request->setClientVerbose(true);
+    }
+
     /* set the proxy configuration */
     request->setProxy(proxyHost,proxyPort);
 
@@ -57,6 +65,10 @@ HttpResult handleRequest(string host, string method, string url, string data){
     /* set status code and content */
     result.status = response.status;
     result.content = response.content;
+
+    /* initialise rewrite engine and rewrite response */
+    RewriteEngine* rewrite = new RewriteEngine(tld);
+    rewrite->rewriteHttpResult(&result);
 
     return result;
 }
@@ -95,6 +107,8 @@ int main(){
     root.lookupValue("proxyHost",proxyHost);
     root.lookupValue("proxyPort",proxyPort);
     root.lookupValue("userAgent",userAgent);
+    root.lookupValue("verboseClient",clientVerbose);
+    root.lookupValue("serverBanner",serverBanner);
 
     /* create instance of the http server */
     HttpServer* server = new HttpServer(servicePort,(void*)handleRequest);

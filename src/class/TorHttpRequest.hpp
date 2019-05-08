@@ -21,6 +21,8 @@ class TorHttpRequest {
         TorHttpRequest(string host, string url){
             this->requestHost = host;
             this->requestUrl = url;
+            this->verbose = false;
+            this->userAgent = "Torgate/42";
         };
 
         /* sets proxy config for socks proxy */
@@ -32,6 +34,10 @@ class TorHttpRequest {
         /* sets user agent to identify with */
         void setUserAgent(string name){
             this->userAgent = name;
+        }
+
+        void setClientVerbose(bool value){
+            this->verbose = value;
         }
 
         /* executes HTTP get */
@@ -55,4 +61,5 @@ class TorHttpRequest {
         string proxyHost;
         int proxyPort;
         string userAgent;
+        bool verbose;
 };

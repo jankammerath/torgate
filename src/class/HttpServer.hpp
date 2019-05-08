@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <microhttpd.h>
 using namespace std;
 
@@ -14,6 +15,21 @@ struct HttpResult {
     int status;
     vector<HttpResultHeader> headerList;
     string content;
+
+    /* returns the content type of this result */
+    string getContentType(){
+        string result = "";
+
+        for(int i=0; i<headerList.size(); i++){
+            string headerName = headerList[i].name;
+            transform(headerName.begin(), headerName.end(), headerName.begin(), ::tolower);
+            if(headerName == "content-type"){
+                result = headerList[i].value;
+            }
+        }
+        
+        return result;
+    }
 };
 
 class HttpServer {

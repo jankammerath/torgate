@@ -73,7 +73,12 @@ TorHttpResponse TorHttpRequest::get(){
     /* initialise curl */
     curl = curl_easy_init();
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); /* 1L = verbose, 0L = off */
+
+    if(this->verbose){
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); /* 1L = verbose, 0L = off */
+    }
+
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, this->userAgent.c_str());
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, TorHttpRequest::writeResponse);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
