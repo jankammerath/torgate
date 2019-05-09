@@ -9,12 +9,28 @@ using namespace std;
 struct HttpResultHeader {
     string name;
     string value;
+
+    pair<string, string> getPair(){
+        return pair<string, string>(name, value);
+    }
 };
 
 struct HttpResult {
     int status;
     vector<HttpResultHeader> headerList;
     string content;
+
+    /* returns a vector with a pair containing all headers */
+    vector<pair<string, string>> getList(){
+        vector<pair<string, string>> result;
+
+        for(int i=0; i<headerList.size(); i++){
+            pair<string, string> item(headerList[i].name,headerList[i].value);
+            result.push_back(item);
+        }
+
+        return result;
+    }
 
     /* returns the content type of this result */
     string getHeader(string header){

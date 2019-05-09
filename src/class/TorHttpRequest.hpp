@@ -36,9 +36,13 @@ class TorHttpRequest {
             this->userAgent = name;
         }
 
+        /* defines whether verbose output is requested */
         void setClientVerbose(bool value){
             this->verbose = value;
         }
+
+        /* sets the client request headers */
+        void setRequestHeader(vector<pair<string, string>> value);
 
         /* executes HTTP get */
         TorHttpResponse get();
@@ -62,4 +66,5 @@ class TorHttpRequest {
         int proxyPort;
         string userAgent;
         bool verbose;
+        vector<pair<string, string>> requestHeaderList;
 };

@@ -34,7 +34,7 @@ string getConfigFile(){
     return result;
 }
 
-HttpResult executeTorRequest(string targetHost,string url){
+HttpResult executeTorRequest(string targetHost, string url, vector<pair<string, string>> headerList){
     HttpResult result;
 
     /* create the new request */
@@ -50,6 +50,9 @@ HttpResult executeTorRequest(string targetHost,string url){
 
     /* set the user agent */
     request->setUserAgent(userAgent);
+
+    /* set the request headers */
+    request->setRequestHeader(headerList);
 
     /* perform the get request */
     TorHttpResponse response = request->get();
@@ -70,7 +73,7 @@ HttpResult executeTorRequest(string targetHost,string url){
 }
 
 /* handles http requests */
-HttpResult handleRequest(string host, string method, string url, string data){
+HttpResult handleRequest(string host, string method, string url, string data, vector<pair<string, string>> headerList){
     HttpResult result;
 
     /* create tor http request */
@@ -88,7 +91,7 @@ HttpResult handleRequest(string host, string method, string url, string data){
         string targetUrl = rewrite->rewriteTargetUrl(url);
 
         /* target host is valid: remote request */
-        result = executeTorRequest(targetHost,targetUrl);
+        result = executeTorRequest(targetHost,targetUrl,headerList);
 
         /* rewrite the result */
         if(result.status == 302 or result.status == 301){

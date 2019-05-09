@@ -17,13 +17,38 @@ string TorHttpRequest::getTargetHostName(string sourceHost, string tld){
     return result;
 }
 
+void TorHttpRequest::setRequestHeader(vector<pair<string, string>> value){
+    /* list with all client request headers allowed to be forwarded */
+    vector<string> alist = {
+        "Cookie", "Referer"
+    };
+
+    /* iterate through all headers and check if they're valid */
+    for(int i=0; i<value.size(); i++){
+        bool valid = false;
+
+        /* match headers against allowed list */
+        for(int a=0; a<alist.size(); a++){
+            if(value[i].first == alist[a]){
+                /* header is allowed */
+                valid = true;
+            }
+        }
+
+        /* add to local var when header is valid */
+        if(valid == true){
+            this->requestHeaderList.push_back(value[i]);
+        }
+    }
+}
+
 /* writes the response headers */
 size_t TorHttpRequest::writeResponseHeader(char* b, size_t size, size_t nitems, void* userdata){
     string headerString = b;
 
     /* vector with all valid headers to return */
     vector<string> vlist = {
-        "Content-Type", "Content-Language", "Cache-Control", "Expires", "Location"
+        "Content-Type", "Content-Language", "Cache-Control", "Expires", "Location", "Set-Cookie"
     };
     
     if(headerString.size() > 0){
@@ -76,6 +101,19 @@ TorHttpResponse TorHttpRequest::get(){
 
     if(this->verbose){
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); /* 1L = verbose, 0L = off */
+    }
+
+    /* add headers if any were supplied */
+    if(this->requestHeaderList.size() > 0){
+        struct curl_slist *chunk = NULL;
+
+        for(int h=0; h<this->requestHeaderList.size(); h++){
+            string headerText = requestHeaderList[h].first + ": " + requestHeaderList[h].second;
+            chunk = curl_slist_append(chunk, headerText.c_str());
+        }
+
+        /* pass the header list to curl */
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
     }
 
     curl_easy_setopt(curl, CURLOPT_USERAGENT, this->userAgent.c_str());

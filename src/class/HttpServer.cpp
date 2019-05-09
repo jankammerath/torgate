@@ -59,7 +59,15 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
     string methodString(method);
     string uploadData;
 
-    /* TODO: The request headers need to be whitelabeled and forwarded! */
+    /* The request headers need to be whitelabeled and forwarded */
+    vector<HttpResultHeader> requestHttpHeaderList;
+    MHD_get_connection_values (connection, MHD_HEADER_KIND, 
+                HttpServer::attachGetParameters, &requestHttpHeaderList);
+    
+    vector<pair<string, string>> requestHeaderList;
+    for(int x=0; x<requestHttpHeaderList.size(); x++){
+        requestHeaderList.push_back(requestHttpHeaderList[x].getPair());
+    }
 
     /* get all get-parameters to attach to URL */
     vector<HttpResultHeader> getParamList;
@@ -125,8 +133,8 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
     }
 
     /* execute external request handler */
-    HttpResult (*handlerFunc)(string,string,string,string) = (HttpResult(*)(string,string,string,string))cls;
-    HttpResult httpResult = handlerFunc(hostName,methodString,urlString,uploadData);
+    HttpResult (*handlerFunc)(string,string,string,string,vector<pair<string, string>>) = (HttpResult(*)(string,string,string,string,vector<pair<string, string>>))cls;
+    HttpResult httpResult = handlerFunc(hostName,methodString,urlString,uploadData,requestHeaderList);
 
     /* set the content to be returned */
     string content = httpResult.content;
