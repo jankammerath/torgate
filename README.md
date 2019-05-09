@@ -2,6 +2,8 @@
 
 Torgate is a reverse HTTP proxy to access Onion-websites through the Tor network. It is written in C++ for Linux using libmicrohttpd, libcurl and libconfig++. To use torgate you need a Linux operating system and a DNS server or DNS entry with a wildcard to your domain that is then appended to the .onion address. Torgate is very similar to Tor2Web, but written in C++ supporting multi-threading. It also supports Cookies, HTTP POST and header forwarding.
 
+![Screenshot of torgate in Docker with Firefox using it](/screenshot.png)
+
 ## How to install
 
 Torgate is in the early stages and installation requires compiling the software yourself using the Makefile. However to make things easier, the repository contains a Dockerfile and a docker-compose.yml file which allow you to quickly run Torgate through Docker. If you however are unfamiliar with Docker, it is recommended to install torgate on your Linux box.
