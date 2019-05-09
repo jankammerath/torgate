@@ -82,11 +82,15 @@ size_t TorHttpRequest::writeResponseHeader(char* b, size_t size, size_t nitems, 
 }
 
 /* executes a GET requests against the defined Host and URL */
-TorHttpResponse TorHttpRequest::get(){
+TorHttpResponse TorHttpRequest::execute(string method, string data){
     TorHttpResponse result;
 
     /* initialise curl handle */
     CURL *curl;
+
+    if(method == "POST"){
+        cout << "POST data: " << endl << data << endl;
+    }
 
     /* define the full request url */
     string url = "http://" + this->requestHost + this->requestUrl;

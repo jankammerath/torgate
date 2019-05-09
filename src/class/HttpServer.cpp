@@ -6,6 +6,8 @@ using namespace std;
 #include "HttpServer.hpp"
 #include "Util.hpp"
 
+#define POSTBUFFERSIZE 512
+
 struct postStatus {
     bool status;
     char *buff;
@@ -89,12 +91,9 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
             + Util::urlencode(getParamList[p].value));
     }
 
-    /* get the requested hostname as string */
-    string hostName = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, "Host");
-
     /* handle POST/PUT operations and theor upload data:
         https://stackoverflow.com/questions/36416422/process-post-data-in-microhttp-server-in-c */
-    if(ptr != NULL && method == "POST"){
+    if(ptr != NULL && methodString == "POST"){
         struct postStatus *post = NULL;
         post = (struct postStatus*)*ptr;
 
@@ -131,6 +130,9 @@ int HttpServer::handleRequest(void * cls, struct MHD_Connection * connection,
             free(post); 
         }
     }
+
+    /* get the requested hostname as string */
+    string hostName = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, "Host");
 
     /* execute external request handler */
     HttpResult (*handlerFunc)(string,string,string,string,vector<pair<string, string>>) = (HttpResult(*)(string,string,string,string,vector<pair<string, string>>))cls;

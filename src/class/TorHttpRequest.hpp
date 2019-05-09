@@ -45,7 +45,7 @@ class TorHttpRequest {
         void setRequestHeader(vector<pair<string, string>> value);
 
         /* executes HTTP get */
-        TorHttpResponse get();
+        TorHttpResponse execute(string method, string data);
 
         /* gets the rewritten target host name */
         static string getTargetHostName(string sourceHost, string tld);
