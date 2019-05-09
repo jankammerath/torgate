@@ -88,10 +88,6 @@ TorHttpResponse TorHttpRequest::execute(string method, string data){
     /* initialise curl handle */
     CURL *curl;
 
-    if(method == "POST"){
-        cout << "POST data: " << endl << data << endl;
-    }
-
     /* define the full request url */
     string url = "http://" + this->requestHost + this->requestUrl;
 
@@ -118,6 +114,11 @@ TorHttpResponse TorHttpRequest::execute(string method, string data){
 
         /* pass the header list to curl */
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+    }
+
+    /* check if method is post and send post data */
+    if(method == "POST"){
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
     }
 
     curl_easy_setopt(curl, CURLOPT_USERAGENT, this->userAgent.c_str());
