@@ -50,14 +50,18 @@ address=/torgate.test/192.168.1.1
 
 The torgate.conf files holds further configuration options.
 
-1. port (default: 80)
-    the port that the torgate HTTP server runs on
+1. **port** (default: 80) 
 
-2. tld (default: torgate.test)
-    the tld that torgate appends to the onion domains
+the port that the torgate HTTP server runs on
 
-3. proxyHost (default: 127.0.0.1)
-    the host address of the tor socks proxy
+2. **tld** (default: torgate.test)
 
-4. proxyPort (default: 9050)
-    the port of the tor socks proxy
+the tld that torgate appends to the onion domains
+
+3. **proxyHost** (default: 127.0.0.1)
+
+the host address of the tor socks proxy
+
+4. **proxyPort** (default: 9050)
+
+the port of the tor socks proxy
