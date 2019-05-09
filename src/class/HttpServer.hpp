@@ -23,6 +23,7 @@ struct HttpResult {
         for(int i=0; i<headerList.size(); i++){
             string headerName = headerList[i].name;
             transform(headerName.begin(), headerName.end(), headerName.begin(), ::tolower);
+            transform(header.begin(), header.end(), header.begin(), ::tolower);
             if(headerName == header){
                 result = headerList[i].value;
             }
@@ -38,6 +39,7 @@ struct HttpResult {
         for(int i=0; i<headerList.size(); i++){
             string headerName = headerList[i].name;
             transform(headerName.begin(), headerName.end(), headerName.begin(), ::tolower);
+            transform(header.begin(), header.end(), header.begin(), ::tolower);
             if(headerName == header){
                 headerList[i].value = value;
                 contentTypeExists = true;
