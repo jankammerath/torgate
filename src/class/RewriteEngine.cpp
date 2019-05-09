@@ -27,6 +27,16 @@ void RewriteEngine::rewriteHttpResult(HttpResult* value){
     }
 }
 
+string RewriteEngine::rewriteTargetUrl(string url){
+    string result = "";
+
+    /* remove the tld from any params */
+    regex regExOnion("([a-zA-Z0-9]*)\\.onion." + this->domainTld);
+    regex_replace (back_inserter(result), url.begin(), url.end(), regExOnion, "$1.onion");
+
+    return result;
+}
+
 bool RewriteEngine::isRewritableResult(HttpResult* value){
     bool result = false;
 

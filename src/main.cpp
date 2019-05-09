@@ -66,10 +66,6 @@ HttpResult executeTorRequest(string targetHost,string url){
     result.status = response.status;
     result.content = response.content;
 
-    /* initialise rewrite engine and rewrite response */
-    RewriteEngine* rewrite = new RewriteEngine(tld);
-    rewrite->rewriteHttpResult(&result);
-
     return result;
 }
 
@@ -85,8 +81,17 @@ HttpResult handleRequest(string host, string method, string url, string data){
         LocalRequest* request = new LocalRequest(localPath,url);
         result = request->execute();
     }else{
+        /* initialise rewrite engine and rewrite response */
+        RewriteEngine* rewrite = new RewriteEngine(tld);
+
+        /* create target url */
+        string targetUrl = rewrite->rewriteTargetUrl(url);
+
         /* target host is valid: remote request */
-        result = executeTorRequest(targetHost,url);
+        result = executeTorRequest(targetHost,targetUrl);
+
+        /* rewrite the result */
+        rewrite->rewriteHttpResult(&result);
     }
 
     return result;

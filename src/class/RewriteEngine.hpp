@@ -15,6 +15,7 @@ class RewriteEngine {
 
         /* rewrites an http result */
         void rewriteHttpResult(HttpResult* value);
+        string rewriteTargetUrl(string url);
     
     private:
         /* private methods */
