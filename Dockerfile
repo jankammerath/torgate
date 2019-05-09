@@ -10,12 +10,17 @@ RUN apt install -y apt-transport-https curl tor tor-geoipdb torsocks
 # install required tools for development
 RUN apt install -y vim g++ make gdb libconfig++-dev libmicrohttpd-dev libcurl4-openssl-dev libmagic-dev
 
-# copy the torrc file
+# copy the torrc and torgate.conf file
 COPY config/torrc /etc/tor/torrc
+COPY config/torgate.conf /etc/torgate.conf
+
+# copy the html files
+COPY html /var/torgate/html/
 
 # copy the source files and compile
-COPY src/ /usr/src/torgate
+COPY src /usr/src/torgate/src/
+RUN ls -l /usr/src/torgate/
 COPY Makefile /usr/src/torgate/Makefile
 WORKDIR /usr/src/torgate
 RUN make
-RUN torgate
+CMD service tor start && torgate

@@ -1,0 +1,6 @@
+version: '3'
+services:
+  torgate:
+    build: .
+    ports:
+      - "80:80"
