@@ -98,6 +98,28 @@ TorHttpResponse TorHttpRequest::get(){
     if(res == CURLE_OK) {
         /* get the HTTP response code */
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &result.status);
+    }else{
+        /* reset the content, set default error */
+        result.content = "";
+
+        /* 
+            502 Bad Gateway 
+            The server was acting as a gateway or proxy 
+            and received an invalid response from the 
+            upstream server.
+        */
+        result.status = 502;
+
+        /* check specific error */
+        if(res == CURLE_OPERATION_TIMEDOUT){
+            /*
+                504 Gateway Timeout
+                The server was acting as a gateway or proxy 
+                and did not receive a timely response from 
+                the upstream server.
+            */
+            result.status = 504;
+        }
     }
 
     /* clean up curl */

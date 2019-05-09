@@ -27,6 +27,14 @@ HttpResult LocalRequest::execute(){
     return result;
 }
 
+/* returns an error page */
+HttpResult LocalRequest::getError(int status){
+    HttpResult result = this->getDefaultResult();
+    result.status = status;
+    result.content = this->getErrorContent(status);
+    return result;
+}
+
 /* check ifs an error page exists in the path */
 string LocalRequest::getErrorContent(int statusCode){
     string result = "Error " + std::to_string(statusCode);

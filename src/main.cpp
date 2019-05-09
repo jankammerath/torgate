@@ -78,8 +78,8 @@ HttpResult handleRequest(string host, string method, string url, string data){
 
     if(targetHost.empty() == true or targetHost == "www."){
         /* target host is empty: local request */
-        LocalRequest* request = new LocalRequest(localPath,url);
-        result = request->execute();
+        LocalRequest request(localPath,url);
+        result = request.execute();
     }else{
         /* initialise rewrite engine and rewrite response */
         RewriteEngine* rewrite = new RewriteEngine(tld);
@@ -100,8 +100,14 @@ HttpResult handleRequest(string host, string method, string url, string data){
             /* 302 and 301 don't have content */
             result.content = "";
         }else{
-            /* perform standard rewrite */
-            rewrite->rewriteHttpResult(&result);
+            if(result.status == 200){
+                /* perform standard rewrite */
+                rewrite->rewriteHttpResult(&result);
+            }else{
+                /* not a successful status */
+                LocalRequest failedRequest(localPath,url);
+                result = failedRequest.getError(result.status);
+            }
         }
     }
 

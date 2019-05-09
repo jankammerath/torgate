@@ -14,6 +14,7 @@ class LocalRequest{
         }
 
         HttpResult execute();
+        HttpResult getError(int status);
 
     private:
         HttpResult getDefaultResult();
