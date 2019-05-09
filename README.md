@@ -18,7 +18,25 @@ $ docker-compose up
 
 ### Install on Ubuntu Bionic 18.04
 
-...
+There is no installation, yet and the Makefile does not have an install recipe. However you can easily install torgate with the following commands. These also include the libraries required as well as the tor client and socks proxy.
+
+```
+$ cd /usr/src/
+$ git clone https://github.com/jankammerath/torgate.git
+$ cd torgate/
+$ cp config/torrc /etc/tor/torrc
+$ cp config/torgate.conf /etc/torgate.conf
+$ cp -R html /var/torgate/html
+$ make
+```
+
+Now run torgate by just executing it.
+
+```
+$ torgate
+```
+
+Please see the configuration section for further necessary configuration, especially of your DNS server. Currently the application is not daemonized, so you would have to configure a service yourself or simply run it in the background.
 
 ## Configuration
 
@@ -31,3 +49,15 @@ address=/torgate.test/192.168.1.1
 ### torgate.conf
 
 The torgate.conf files holds further configuration options.
+
+1. port (default: 80)
+    the port that the torgate HTTP server runs on
+
+2. tld (default: torgate.test)
+    the tld that torgate appends to the onion domains
+
+3. proxyHost (default: 127.0.0.1)
+    the host address of the tor socks proxy
+
+4. proxyPort (default: 9050)
+    the port of the tor socks proxy

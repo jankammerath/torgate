@@ -19,7 +19,6 @@ COPY html /var/torgate/html/
 
 # copy the source files and compile
 COPY src /usr/src/torgate/src/
-RUN ls -l /usr/src/torgate/
 COPY Makefile /usr/src/torgate/Makefile
 WORKDIR /usr/src/torgate
 RUN make
