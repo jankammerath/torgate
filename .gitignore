@@ -1,3 +1,4 @@
 bin/torgate
 .header
 .vscode
+*.sh
