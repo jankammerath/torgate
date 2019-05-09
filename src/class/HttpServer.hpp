@@ -30,6 +30,27 @@ struct HttpResult {
         
         return result;
     }
+
+    /* sets the content type or mime-type for this result */
+    void setContentType(string value){
+        bool contentTypeExists = false;
+
+        for(int i=0; i<headerList.size(); i++){
+            string headerName = headerList[i].name;
+            transform(headerName.begin(), headerName.end(), headerName.begin(), ::tolower);
+            if(headerName == "content-type"){
+                headerList[i].value = value;
+                contentTypeExists = true;
+            }
+        }
+
+        if(!contentTypeExists){
+            HttpResultHeader contentTypeHeader;
+            contentTypeHeader.name = "Content-Type";
+            contentTypeHeader.value = value;
+            this->headerList.push_back(contentTypeHeader);
+        }
+    }
 };
 
 class HttpServer {

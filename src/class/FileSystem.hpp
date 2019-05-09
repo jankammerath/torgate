@@ -16,6 +16,35 @@ class FileSystem {
             return (stat (name.c_str(), &buffer) == 0);     
         }
 
+        /* returns the mime type for a file */
+        static string getMimeType(string fileName){
+            string result = "text/plain";
+
+            /* define relevant commom mime types */
+            vector<pair<string,string>> mimeList = {
+                {"jpeg", "image/jpeg"}, {"jpg", "image/jpeg"}, {"jpe", "image/jpeg"}, 
+                {"png", "image/png"}, {"tif", "image/tiff"}, {"tiff", "image/tiff"}, 
+                {"gif", "image/gif"}, {"svg", "image/svg+xml"}, {"svgz", "image/svg+xml"}, 
+                {"ico", "image/vnd.microsoft.icon"}, {"css", "text/css"}, 
+                {"js", "application/javascript"}, {"json", "application/json"},
+                {"html", "text/html"}, {"htm", "text/html"}
+            };
+
+            /* get the file extension */
+            string ext = FileSystem::getFileExt(fileName);
+            for(int i=0; i<mimeList.size(); i++){
+                if(mimeList[i].first == ext){
+                    result = mimeList[i].second;
+                }
+            }
+
+            return result;
+        }
+
+        static string getFileExt(string fileName){
+            return fileName.substr(fileName.find_last_of(".")+1);
+        }
+
         /* creates a directory using unix 'mkdir' equivalent */
         static bool makeDir(string path){
             bool result = false;

@@ -37,6 +37,7 @@ string getConfigFile(){
 HttpResult executeTorRequest(string targetHost,string url){
     HttpResult result;
 
+    /* create the new request */
     TorHttpRequest* request = new TorHttpRequest(targetHost,url);
 
     /* set client verbose if requested */
