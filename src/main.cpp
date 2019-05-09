@@ -91,7 +91,18 @@ HttpResult handleRequest(string host, string method, string url, string data){
         result = executeTorRequest(targetHost,targetUrl);
 
         /* rewrite the result */
-        rewrite->rewriteHttpResult(&result);
+        if(result.status == 302 or result.status == 301){
+            /* we need to rewrite the location header */
+            string location = result.getHeader("Location");
+            string sourceLocation = rewrite->rewriteSourceUrl(location);
+            result.setHeader("Location",sourceLocation);
+
+            /* 302 and 301 don't have content */
+            result.content = "";
+        }else{
+            /* perform standard rewrite */
+            rewrite->rewriteHttpResult(&result);
+        }
     }
 
     return result;

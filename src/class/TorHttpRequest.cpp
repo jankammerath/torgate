@@ -23,7 +23,7 @@ size_t TorHttpRequest::writeResponseHeader(char* b, size_t size, size_t nitems, 
 
     /* vector with all valid headers to return */
     vector<string> vlist = {
-        "Content-Type", "Content-Language", "Cache-Control", "Expires"
+        "Content-Type", "Content-Language", "Cache-Control", "Expires", "Location"
     };
     
     if(headerString.size() > 0){
@@ -82,7 +82,7 @@ TorHttpResponse TorHttpRequest::get(){
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, TorHttpRequest::writeResponse);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, true); 
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, false); 
     curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, TorHttpRequest::writeResponseHeader);
     curl_easy_setopt(curl, CURLOPT_HEADERDATA, &headerList);
 
@@ -100,6 +100,7 @@ TorHttpResponse TorHttpRequest::get(){
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &result.status);
     }
 
+    /* clean up curl */
     curl_easy_cleanup(curl);
 
     /* build up the result struct */

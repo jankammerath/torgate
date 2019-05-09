@@ -27,6 +27,16 @@ void RewriteEngine::rewriteHttpResult(HttpResult* value){
     }
 }
 
+string RewriteEngine::rewriteSourceUrl(string url){
+    string result = "";
+
+    /* add the tld */
+    regex regExOnion("([a-zA-Z0-9]*)\\.onion");
+    regex_replace (back_inserter(result), url.begin(), url.end(), regExOnion, "$1.onion."+this->domainTld);
+
+    return result;
+}
+
 string RewriteEngine::rewriteTargetUrl(string url){
     string result = "";
 
@@ -41,7 +51,7 @@ bool RewriteEngine::isRewritableResult(HttpResult* value){
     bool result = false;
 
     /* get the content type */
-    string contentType = value->getContentType();
+    string contentType = value->getHeader("Content-Type");
 
     /* define the rewritable content types */
     vector<string> rewritableTypeList = { 

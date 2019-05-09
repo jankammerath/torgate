@@ -18,7 +18,7 @@ HttpResult LocalRequest::execute(){
     if(FileSystem::fileExists(file)){
         result.status = 200;
         result.content = FileSystem::readFile(file);
-        result.setContentType(FileSystem::getMimeType(file));
+        result.setHeader("Content-Type",FileSystem::getMimeType(file));
     }else{
         result.status = 404;
         result.content = this->getErrorContent(404);
@@ -47,7 +47,7 @@ HttpResult LocalRequest::getDefaultResult(){
     result.content = "500 - Server error";
 
     /* default is just html */
-    result.setContentType("text/html");
+    result.setHeader("Content-Type","text/html");
 
     return result;
 }

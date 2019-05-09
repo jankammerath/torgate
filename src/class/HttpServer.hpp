@@ -17,13 +17,13 @@ struct HttpResult {
     string content;
 
     /* returns the content type of this result */
-    string getContentType(){
+    string getHeader(string header){
         string result = "";
 
         for(int i=0; i<headerList.size(); i++){
             string headerName = headerList[i].name;
             transform(headerName.begin(), headerName.end(), headerName.begin(), ::tolower);
-            if(headerName == "content-type"){
+            if(headerName == header){
                 result = headerList[i].value;
             }
         }
@@ -32,13 +32,13 @@ struct HttpResult {
     }
 
     /* sets the content type or mime-type for this result */
-    void setContentType(string value){
+    void setHeader(string header, string value){
         bool contentTypeExists = false;
 
         for(int i=0; i<headerList.size(); i++){
             string headerName = headerList[i].name;
             transform(headerName.begin(), headerName.end(), headerName.begin(), ::tolower);
-            if(headerName == "content-type"){
+            if(headerName == header){
                 headerList[i].value = value;
                 contentTypeExists = true;
             }
@@ -46,7 +46,7 @@ struct HttpResult {
 
         if(!contentTypeExists){
             HttpResultHeader contentTypeHeader;
-            contentTypeHeader.name = "Content-Type";
+            contentTypeHeader.name = header;
             contentTypeHeader.value = value;
             this->headerList.push_back(contentTypeHeader);
         }
