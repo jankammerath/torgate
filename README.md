@@ -12,6 +12,7 @@ If you wish to run torgate through Docker, then download the repository and its 
 
 ```
 $ git clone https://github.com/jankammerath/torgate.git
+$ cd torgate/
 $ docker-compose up
 ```
 
@@ -21,4 +22,12 @@ $ docker-compose up
 
 ## Configuration
 
-...
+You need to configure your DNS in order for torgate to work. By default the TLD or domain for torgate to append to .onion-Domains is torgate.test. The following line is required to be added to your DNS server. The example shows the configuration for the dnsmasq DNS server.
+
+```                    
+address=/torgate.test/192.168.1.1
+```
+
+### torgate.conf
+
+The torgate.conf files holds further configuration options.
